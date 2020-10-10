@@ -3,7 +3,8 @@
 const secp256k1 = require('secp256k1');
 const { randomBytes, createHash } = require('crypto');
 
-
+const hash = createHash('sha256');
+const hashedMsg = hash.update('my house is cleaned').digest();
 /**
  * A function which generates a new random Secp256k1 private key, returning
  * it as a 64 character hexadecimal string.
@@ -15,8 +16,15 @@ const { randomBytes, createHash } = require('crypto');
  */
 const createPrivateKey = () => {
   // Enter your solution here
-
+  let privKey;
+  do {
+    privKey = randomBytes(32);
+  } while (!secp256k1.privateKeyVerify(privKey));
+  return privKey;
+  
 };
+const privateKey = createPrivateKey();
+console.log(privateKey);
 
 /**
  * A function which takes a hexadecimal private key and returns its public pair
@@ -32,10 +40,13 @@ const createPrivateKey = () => {
  *   not hex strings! You'll have to convert the private key.
  */
 const getPublicKey = privateKey => {
-  // Your code here
+  const pubKey = secp256k1.publicKeyCreate(privateKey);
+  return pubKey;
 
 };
 
+const publicKey = getPublicKey(privateKey);
+console.log(publicKey);
 /**
  * A function which takes a hex private key and a string message, returning
  * a 128 character hexadecimal signature.
@@ -50,10 +61,14 @@ const getPublicKey = privateKey => {
  *   not the message itself!
  */
 const sign = (privateKey, message) => {
-  // Your code here
+  
+  const sigObj = secp256k1.sign(message, privateKey);
 
+  return sigObj;
 };
 
+const signedObject = sign(privateKey, hashedMsg);
+console.log(signedObject);
 /**
  * A function which takes a hex public key, a string message, and a hex
  * signature, and returns either true or false.
