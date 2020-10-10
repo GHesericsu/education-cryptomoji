@@ -80,9 +80,11 @@ console.log(signedObject);
  *   // false
  */
 const verify = (publicKey, message, signature) => {
-  // Your code here
-
+  const result = secp256k1.verify(message, signature.signature, publicKey)
+  return result;
 };
+
+console.log(verify(publicKey, hashedMsg, signedObject));
 
 module.exports = {
   createPrivateKey,
